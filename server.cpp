@@ -1,6 +1,7 @@
 #include "server.hpp"
 #include "Transaction.hpp"
 #include <stdexcept>
+#include <sstream>
 
 // Adds a clients to bank
 Bank::Bank(){
@@ -26,12 +27,17 @@ void Bank::processTransaction(const Transaction& transaction){
     Client& sender = getClient(transaction.getSenderAccountNumber());
     Client& recipient = getClient(transaction.getRecipientAccountNumber());
 
+    // convert transaction amount from string to double
+    std::stringstream s(transaction.getAmount());
+    double transactionAmount = 0;
+    s>>transactionAmount;
+
     // check if sender has enough balance
-    if(sender.getBalance() < transaction.getAmount()){
+    if(sender.getBalance() < transactionAmount){
         throw std::invalid_argument("Sender does not have enough balance for this transaction.");
     }
 
     // Transfer funds
-    sender.decreaseBalance(transaction.getAmount());
-    recipient.increaseBalance(transaction.getAmount());
+    sender.decreaseBalance(transactionAmount);
+    recipient.increaseBalance(transactionAmount);
 }

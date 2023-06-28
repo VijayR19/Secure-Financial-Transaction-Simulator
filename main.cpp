@@ -4,6 +4,7 @@
 #include "cryptoHandler.hpp"
 #include <cryptopp/hex.h>
 #include <iostream>
+#include <sstream> // for stringstream
 
 int main() {
     // Create some clients
@@ -20,22 +21,32 @@ int main() {
     std::cout << "Lyon's initial balance: " << bank.getClient("456").getBalance() << std::endl;
 
     // Alice sends 200 to Lyon
-    Transaction transaction("123", "456", 200, "transfer");
+    double amount = 200;
+    
+    //Encrypt the transaction amount using AES
+    CryptoHandler crypto;
+    std::stringstream ss;
+    ss<<amount;
+    std::string amountStr = ss.str();
+    std::string encryptedAmount = crypto.encrypt(amountStr);
+
+    // process the transaction using the encrypted data
+    Transaction transaction("123", "456",encryptedAmount,"transfer");
     bank.processTransaction(transaction);
+
+    // Decrypt the transaction amount cak into a double
+    std::string decryptedAmountStr = crypto.decrypt(transaction.getAmount());
+    std::stringstream s(decryptedAmountStr);
+    double decryptedAMount = 0;
+    s>>decryptedAMount;
 
     // Print new balances
     std::cout << "Alice's new balance: " << bank.getClient("123").getBalance() << std::endl;
     std::cout << "Lyon's new balance: " << bank.getClient("456").getBalance() << std::endl;
 
-    // Encrypt and decrypt a text message using AES
-    CryptoHandler crypto;
-    std::string plainText = "Hello World!";
-    std::string cipherText = crypto.encrypt(plainText);
-    std::string decryptedText = crypto.decrypt(cipherText);
-
-    std::cout << "Plain Text: " << plainText << std::endl;
-    std::cout << "Encrypted Text: " << cipherText << std::endl;
-    std::cout << "Decrypted Text: " << decryptedText << std::endl;
+    std::cout<<"Origional transaction amount: "<<amount<<std::endl;
+    std::cout<<"Encrypted transaction amount: "<<encryptedAmount<<std::endl;
+    std::cout<<"Decrypted transaction amount: "<<decryptedAMount<<std::endl;
 
     return 0;
 }

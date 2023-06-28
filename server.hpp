@@ -3,6 +3,7 @@
 
 #include "client.hpp"
 #include <map>
+# include <sstream> // for stringstream
 
 // Bank/server class definition
 class Bank

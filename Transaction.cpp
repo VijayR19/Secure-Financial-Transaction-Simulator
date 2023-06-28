@@ -2,7 +2,7 @@
 #include <string>
 
 // constructor
-Transaction::Transaction(const std::string& senderAccountNumber, const std::string& recipientAccountNumber,double amount, const std::string& type)
+Transaction::Transaction(const std::string& senderAccountNumber, const std::string& recipientAccountNumber,std::string amount, const std::string& type)
             :senderAccountNumber(senderAccountNumber),recipientAccountNumber(recipientAccountNumber),amount(amount),type(type) {}
             
 //Getter for sender account Number
@@ -16,7 +16,7 @@ const std::string& Transaction::getRecipientAccountNumber() const{
 }
 
 //Getter for amount
-double Transaction::getAmount() const{
+std::string Transaction::getAmount() const{ // chnaged the return type to string
     return amount;
 }
 
